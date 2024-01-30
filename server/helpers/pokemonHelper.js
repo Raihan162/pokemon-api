@@ -94,23 +94,29 @@ const getMyPokemon = async () => {
   }
 }
 
-const releaseMyPokemon = async (id) => {
+const releaseMyPokemon = async () => {
   try {
-    const dbMyPokemon = await fs.readFileSync(fileName, 'utf-8')
-    const currentData = JSON.parse(dbMyPokemon)
+    const randNum = Math.floor(Math.random() * 10)
 
-    const checkData = currentData?.filter((data) => String(data.id) === id)
-    if (checkData.length === 0) {
-      throw { message: 'Id does`t exist in My Pokemon' }
+    if (GeneralHelper.isPrime(randNum)) {
+
+      const dbMyPokemon = await fs.readFileSync(fileName, 'utf-8')
+      const currentData = JSON.parse(dbMyPokemon)
+
+      const checkData = currentData?.filter((data) => data.id === randNum)
+      if (checkData.length === 0) {
+        throw { message: 'Id does`t exist in My Pokemon' }
+      }
+
+      const deleteData = currentData?.filter((data) => data.id !== randNum)
+
+      await fs.writeFileSync(fileName, JSON.stringify(deleteData))
+
+      return getMyPokemon()
+    } else {
+      throw { message: 'Number is not prime number.' }
     }
 
-    const deleteData = currentData?.filter((data) => String(data.id) !== id)
-
-
-
-    await fs.writeFileSync(fileName, JSON.stringify(deleteData))
-
-    return getMyPokemon()
   } catch (error) {
     console.log(error)
     return Promise.reject(error)

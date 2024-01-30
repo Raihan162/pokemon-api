@@ -33,7 +33,7 @@ const createTestServer = (path, plugin) => {
 
   app.use(path, plugin);
 
-  return app.listen(null, () => {});
+  return app.listen(null, () => { });
 };
 
 const errorResponse = (error) => {
@@ -48,7 +48,7 @@ const errorResponse = (error) => {
           return Boom.badImplementation();
       }
     }
-    
+
     switch (error.output.payload.statusCode) {
       case 422:
         return Boom.badData(error.output.payload.message, data);
@@ -111,8 +111,20 @@ const commonHttpRequest = async (options) => {
   }
 };
 
+function isPrime(n) {
+  if (n <= 1)
+    return false;
+
+  for (let i = 2; i < n; i++)
+    if (n % i == 0)
+      return false;
+
+  return true;
+}
+
 module.exports = {
   createTestServer,
   errorResponse,
-  commonHttpRequest
+  commonHttpRequest,
+  isPrime
 };
