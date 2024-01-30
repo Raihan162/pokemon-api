@@ -8,9 +8,9 @@ const fileName = 'server/api/pokemon.js';
 
 const list = async (request, reply) => {
   try {
-    // Validation.pokemonListValidation(request.query);
+    Validation.pokemonListValidation(request.query);
 
-    const { id } = request.params;
+    const { id } = request.query;
     const response = await PokemonHelper.getPokemonList({ id });
 
     return reply
@@ -21,13 +21,12 @@ const list = async (request, reply) => {
       });
 
   } catch (err) {
-    console.log([fileName, 'list', 'ERROR'], { info: `${err}` });
-    // return reply.send(GeneralHelper.errorResponse(err));
+
     return reply
       .status(400)
       .send({
-        error: err.message
-      })
+        error: err.details ? err.details[0].message : err.message
+      });
   }
 }
 
@@ -55,73 +54,76 @@ const allList = async (request, reply) => {
 
 const catchPokemon = async (request, reply) => {
   try {
-    const { name } = request.body
+    Validation.pokemonCatchValidation(request.body);
 
-    const response = await PokemonHelper.catchPokemon(name)
+    const { name } = request.body;
+
+    const response = await PokemonHelper.catchPokemon(name);
 
     return reply
       .status(200)
       .send({
         message: 'Catch Pokemon Success',
         response
-      })
+      });
 
-  } catch (error) {
+  } catch (err) {
 
     return reply
       .status(400)
       .send({
-        error: error
-      })
+        error: err.details ? err.details[0].message : err.message
+      });
   }
 }
 
 const myPokemon = async (request, reply) => {
   try {
-    const response = await PokemonHelper.getMyPokemon()
+    const response = await PokemonHelper.getMyPokemon();
 
     return reply
       .status(200)
       .send({
         message: 'Get My Pokemon Success',
         response
-      })
-  } catch (error) {
+      });
+  } catch (err) {
     return reply
       .status(400)
       .send({
-        error: error
-      })
+        error: err.details ? err.details[0].message : err.message
+      });
   }
 }
 
 const releaseMyPokemon = async (request, reply) => {
   try {
 
-    const response = await PokemonHelper.releaseMyPokemon()
+    const response = await PokemonHelper.releaseMyPokemon();
 
     return reply
       .status(200)
       .send({
         message: 'Release Pokemon Success',
         response
-      })
+      });
 
-  } catch (error) {
+  } catch (err) {
     return reply
       .status(400)
       .send({
-        error: error
-      })
+        error: err.details ? err.details[0].message : err.message
+      });
   }
 }
 
 const renameNickname = async (request, reply) => {
   try {
-    const { id } = request.params
-    const { nickname } = request.body
+    const { id } = request.query;
+    const { nickname } = request.body;
+    Validation.pokemonRenameValidation({ id, nickname });
 
-    const response = await PokemonHelper.rename(id, nickname)
+    const response = await PokemonHelper.rename(id, nickname);
 
     return reply
       .status(200)
@@ -130,20 +132,20 @@ const renameNickname = async (request, reply) => {
         response
       });
 
-  } catch (error) {
+  } catch (err) {
     return reply
       .status(400)
       .send({
-        error: error.message
-      })
+        error: err.details ? err.details[0].message : err.message
+      });
   }
 }
 
-Router.get('/list/:id', list);
-Router.get('/all_pokemon', allList)
-Router.post('/catch', catchPokemon)
-Router.get('/my-pokemon', myPokemon)
-Router.delete('/release-pokemon', releaseMyPokemon)
-Router.patch('/rename/:id', renameNickname)
+Router.get('/list', list);
+Router.get('/all_pokemon', allList);
+Router.post('/catch', catchPokemon);
+Router.get('/my-pokemon', myPokemon);
+Router.delete('/release-pokemon', releaseMyPokemon);
+Router.patch('/rename', renameNickname);
 
 module.exports = Router;
