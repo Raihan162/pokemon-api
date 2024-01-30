@@ -2,6 +2,8 @@ const _ = require('lodash');
 const fs = require('fs')
 const axios = require('axios')
 
+const GeneralHelper = require('../helpers/generalHelper');
+
 const fileName = `${__dirname}/../../assets/my_pokemon.json`
 
 const getPokemonList = async (dataObject) => {
@@ -34,11 +36,18 @@ const getPokemonList = async (dataObject) => {
 const getAllPokemon = async () => {
   try {
 
-    const response = await axios.get(`${process.env.BASEURL_POKEAPI}pokemon`)
-    return response?.data?.results
-    
+    const option = {
+      method: 'get',
+      baseURL: `${process.env.BASEURL_POKEAPI}`,
+      url: 'pokemon/'
+    }
+
+    const response = await GeneralHelper.commonHttpRequest(option)
+
+    return Promise.resolve(response?.results)
+
   } catch (error) {
-    throw error
+    return Promise.reject(error)
   }
 }
 

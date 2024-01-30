@@ -23,13 +23,13 @@ const list = async (request, reply) => {
 const allList = async (request, reply) => {
   try {
 
-    const response = await PokemonHelper.getAllPokemon();
+    const response = await PokemonHelper.getAllPokemon()
 
     return reply
       .status(200)
       .send({
-        message: 'Get All Pokemon Success!',
-        data: response
+        message: 'Get All Pokemon Success',
+        response
       })
 
   } catch (error) {
