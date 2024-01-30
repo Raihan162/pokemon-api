@@ -116,10 +116,34 @@ const releaseMyPokemon = async (request, reply) => {
   }
 }
 
+const renameNickname = async (request, reply) => {
+  try {
+    const { id } = request.params
+    const { nickname } = request.body
+
+    const response = await PokemonHelper.rename(id, nickname)
+
+    return reply
+      .status(200)
+      .send({
+        message: 'Rename Pokemon Success',
+        response
+      });
+
+  } catch (error) {
+    return reply
+      .status(400)
+      .send({
+        error: error.message
+      })
+  }
+}
+
 Router.get('/list/:id', list);
 Router.get('/all_pokemon', allList)
 Router.post('/catch', catchPokemon)
 Router.get('/my-pokemon', myPokemon)
 Router.delete('/release-pokemon', releaseMyPokemon)
+Router.patch('/rename/:id', renameNickname)
 
 module.exports = Router;

@@ -57,9 +57,7 @@ const catchPokemon = async (name) => {
       const dbMyPokemon = await fs.readFileSync(fileName, 'utf-8')
       const currentData = JSON.parse(dbMyPokemon)
 
-      console.log(GeneralHelper.fibonacci(4), '<<<< FIBO')
       const filteredData = currentData?.filter((data) => data.name === name)
-      console.log(filteredData)
 
       if (filteredData.length === 0) {
         const response = await GeneralHelper.commonHttpRequest(option)
@@ -79,13 +77,13 @@ const catchPokemon = async (name) => {
           id: currentData.length + 1,
           name: response?.name,
           weight: response?.weight,
-          nickname: `${response?.name}-${GeneralHelper.fibonacci(filteredData.length) }`
+          nickname: `${response?.name}-${GeneralHelper.fibonacci(filteredData.length)}`
         }
 
         await fs.writeFileSync(fileName, JSON.stringify([...currentData, addData]))
 
         return Promise.resolve(addData)
-      } 
+      }
 
     } else {
       throw ('Catch Pokemon Failed')
@@ -142,10 +140,66 @@ const releaseMyPokemon = async () => {
   }
 }
 
+const rename = async (id, nickname) => {
+  try {
+
+    const dbMyPokemon = await fs.readFileSync(fileName, 'utf-8')
+    const currentData = JSON.parse(dbMyPokemon)
+    if (currentData.length === 0) {
+      throw {
+        message: 'My Pokemon Empty'
+      }
+    }
+
+    const filteredData = currentData?.filter((data) => String(data.id) === id)
+    console.log(filteredData)
+
+    if (filteredData.length === 0) {
+      throw { message: 'ID doesn`t exist.' }
+    }
+
+    const filteredDataByNickname = currentData?.filter((data) => data.nickname.includes(nickname))
+
+    if (filteredDataByNickname.length === 0) {
+      const updateData = {
+        id: currentData?.length + 1,
+        name: filteredData[0]?.name,
+        weight: filteredData[0]?.weight,
+        nickname: nickname
+      }
+
+      await fs.writeFileSync(fileName, JSON.stringify([...currentData, updateData]))
+
+      return Promise.resolve(updateData)
+    } else if (filteredData.length >= 1) {
+      const updateData = {
+        id: currentData?.length + 1,
+        name: filteredData[0]?.name,
+        weight: filteredData[0]?.weight,
+        nickname: `${nickname}-${GeneralHelper.fibonacci(filteredDataByNickname.length)}`
+      }
+
+      await fs.writeFileSync(fileName, JSON.stringify([...currentData, updateData]))
+
+      return Promise.resolve(updateData)
+    }
+
+
+    //   if (filteredDataByID.length === 0) {
+
+    // }
+
+  } catch (error) {
+    console.log(error)
+    return Promise.reject(error)
+  }
+}
+
 module.exports = {
   getPokemonList,
   getAllPokemon,
   catchPokemon,
   getMyPokemon,
-  releaseMyPokemon
+  releaseMyPokemon,
+  rename
 }
