@@ -80,8 +80,23 @@ const catchPokemon = async (name) => {
   }
 }
 
+const getMyPokemon = async () => {
+  try {
+    const dbMyPokemon = await fs.readFileSync(fileName, 'utf-8')
+    const currentData = JSON.parse(dbMyPokemon)
+    if (currentData.length === 0) {
+      throw { message: 'Data My Pokemon Empty' }
+    }
+    return Promise.resolve(currentData)
+  } catch (error) {
+    console.log(error)
+    return Promise.reject(error)
+  }
+}
+
 module.exports = {
   getPokemonList,
   getAllPokemon,
-  catchPokemon
+  catchPokemon,
+  getMyPokemon
 }

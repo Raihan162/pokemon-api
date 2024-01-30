@@ -76,8 +76,28 @@ const catchPokemon = async (request, reply) => {
   }
 }
 
+const myPokemon = async (request, reply) => {
+  try {
+    const response = await PokemonHelper.getMyPokemon()
+
+    return reply
+      .status(200)
+      .send({
+        message: 'Get My Pokemon Success',
+        response
+      })
+  } catch (error) {
+    return reply
+      .status(400)
+      .send({
+        error: error
+      })
+  }
+}
+
 Router.get('/list/:id', list);
 Router.get('/all_pokemon', allList)
 Router.post('/catch', catchPokemon)
+Router.get('/my-pokemon', myPokemon)
 
 module.exports = Router;
