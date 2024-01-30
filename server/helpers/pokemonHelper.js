@@ -57,17 +57,36 @@ const catchPokemon = async (name) => {
       const dbMyPokemon = await fs.readFileSync(fileName, 'utf-8')
       const currentData = JSON.parse(dbMyPokemon)
 
-      const response = await GeneralHelper.commonHttpRequest(option)
-      const addData = {
-        id: currentData.length + 1,
-        name: response?.name,
-        weight: response?.weight,
-        nickname: response?.name
-      }
+      console.log(GeneralHelper.fibonacci(4), '<<<< FIBO')
+      const filteredData = currentData?.filter((data) => data.name === name)
+      console.log(filteredData)
 
-      await fs.writeFileSync(fileName, JSON.stringify([...currentData, addData]))
+      if (filteredData.length === 0) {
+        const response = await GeneralHelper.commonHttpRequest(option)
+        const addData = {
+          id: currentData.length + 1,
+          name: response?.name,
+          weight: response?.weight,
+          nickname: response?.name
+        }
 
-      return Promise.resolve(addData)
+        await fs.writeFileSync(fileName, JSON.stringify([...currentData, addData]))
+
+        return Promise.resolve(addData)
+      } else if (filteredData.length >= 1) {
+        const response = await GeneralHelper.commonHttpRequest(option)
+        const addData = {
+          id: currentData.length + 1,
+          name: response?.name,
+          weight: response?.weight,
+          nickname: `${response?.name}-${GeneralHelper.fibonacci(filteredData.length) }`
+        }
+
+        await fs.writeFileSync(fileName, JSON.stringify([...currentData, addData]))
+
+        return Promise.resolve(addData)
+      } 
+
     } else {
       throw ('Catch Pokemon Failed')
     }
@@ -114,7 +133,7 @@ const releaseMyPokemon = async () => {
 
       return getMyPokemon()
     } else {
-      throw { message: 'Number is not prime number.' }
+      throw { message: 'Release pokemon failed.' }
     }
 
   } catch (error) {
