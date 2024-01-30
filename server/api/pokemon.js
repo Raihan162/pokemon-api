@@ -8,15 +8,26 @@ const fileName = 'server/api/pokemon.js';
 
 const list = async (request, reply) => {
   try {
-    Validation.pokemonListValidation(request.query);
+    // Validation.pokemonListValidation(request.query);
 
-    const { name } = request.query;
-    const response = await PokemonHelper.getPokemonList({ name });
+    const { id } = request.params;
+    const response = await PokemonHelper.getPokemonList({ id });
 
-    return reply.send(response);
+    return reply
+      .status(200)
+      .send({
+        message: 'Get Detail Pokemon Success',
+        response
+      });
+
   } catch (err) {
     console.log([fileName, 'list', 'ERROR'], { info: `${err}` });
-    return reply.send(GeneralHelper.errorResponse(err));
+    // return reply.send(GeneralHelper.errorResponse(err));
+    return reply
+      .status(400)
+      .send({
+        error: err.message
+      })
   }
 }
 
@@ -42,7 +53,7 @@ const allList = async (request, reply) => {
   }
 }
 
-Router.get('/list', list);
+Router.get('/list/:id', list);
 Router.get('/all_pokemon', allList)
 
 module.exports = Router;

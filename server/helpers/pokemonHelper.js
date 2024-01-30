@@ -6,31 +6,22 @@ const GeneralHelper = require('../helpers/generalHelper');
 
 const fileName = `${__dirname}/../../assets/my_pokemon.json`
 
-const getPokemonList = async (dataObject) => {
-  const { name } = dataObject;
+const getPokemonList = async ({ id }) => {
+  try {
 
-  let pokemon = [
-    {
-      "id": 1,
-      "name": "bulbasaur",
-      "url": "https://pokeapi.co/api/v2/pokemon/1/"
-    },
-    {
-      "id": 2,
-      "name": "ivysaur",
-      "url": "https://pokeapi.co/api/v2/pokemon/2/"
-    },
-    {
-      "id": 3,
-      "name": "venusaur",
-      "url": "https://pokeapi.co/api/v2/pokemon/3/"
+    const option = {
+      method: 'get',
+      baseURL: `${process.env.BASEURL_POKEAPI}`,
+      url: `pokemon/${id}`
     }
-  ];
-  if (!_.isEmpty(name)) {
-    pokemon = _.filter(pokemon, (item) => item.name.toLowerCase() === name.toLowerCase());
-  }
 
-  return Promise.resolve(pokemon);
+    const response = await GeneralHelper.commonHttpRequest(option)
+
+    return Promise.resolve({ name: response?.name, weight: response?.weight, species: response?.species, abilities: response?.abilities })
+
+  } catch (error) {
+    return Promise.reject(error)
+  }
 }
 
 const getAllPokemon = async () => {
