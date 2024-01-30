@@ -53,7 +53,31 @@ const allList = async (request, reply) => {
   }
 }
 
+const catchPokemon = async (request, reply) => {
+  try {
+    const { name } = request.body
+
+    const response = await PokemonHelper.catchPokemon(name)
+
+    return reply
+      .status(200)
+      .send({
+        message: 'Catch Pokemon Success',
+        response
+      })
+
+  } catch (error) {
+
+    return reply
+      .status(400)
+      .send({
+        error: error
+      })
+  }
+}
+
 Router.get('/list/:id', list);
 Router.get('/all_pokemon', allList)
+Router.post('/catch', catchPokemon)
 
 module.exports = Router;
