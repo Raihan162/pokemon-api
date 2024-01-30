@@ -1,8 +1,12 @@
 const _ = require('lodash');
+const fs = require('fs')
+const axios = require('axios')
+
+const fileName = `${__dirname}/../../assets/my_pokemon.json`
 
 const getPokemonList = async (dataObject) => {
   const { name } = dataObject;
-  
+
   let pokemon = [
     {
       "id": 1,
@@ -27,6 +31,18 @@ const getPokemonList = async (dataObject) => {
   return Promise.resolve(pokemon);
 }
 
+const getAllPokemon = async () => {
+  try {
+
+    const response = await axios.get(`${process.env.BASEURL_POKEAPI}pokemon`)
+    return response?.data?.results
+    
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
-  getPokemonList
+  getPokemonList,
+  getAllPokemon
 }

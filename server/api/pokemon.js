@@ -20,6 +20,29 @@ const list = async (request, reply) => {
   }
 }
 
+const allList = async (request, reply) => {
+  try {
+
+    const response = await PokemonHelper.getAllPokemon();
+
+    return reply
+      .status(200)
+      .send({
+        message: 'Get All Pokemon Success!',
+        data: response
+      })
+
+  } catch (error) {
+
+    return reply
+      .status(400)
+      .send({
+        error: error
+      })
+  }
+}
+
 Router.get('/list', list);
+Router.get('/all_pokemon', allList)
 
 module.exports = Router;
