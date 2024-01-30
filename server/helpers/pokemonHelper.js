@@ -94,9 +94,33 @@ const getMyPokemon = async () => {
   }
 }
 
+const releaseMyPokemon = async (id) => {
+  try {
+    const dbMyPokemon = await fs.readFileSync(fileName, 'utf-8')
+    const currentData = JSON.parse(dbMyPokemon)
+
+    const checkData = currentData?.filter((data) => String(data.id) === id)
+    if (checkData.length === 0) {
+      throw { message: 'Id does`t exist in My Pokemon' }
+    }
+
+    const deleteData = currentData?.filter((data) => String(data.id) !== id)
+
+
+
+    await fs.writeFileSync(fileName, JSON.stringify(deleteData))
+
+    return getMyPokemon()
+  } catch (error) {
+    console.log(error)
+    return Promise.reject(error)
+  }
+}
+
 module.exports = {
   getPokemonList,
   getAllPokemon,
   catchPokemon,
-  getMyPokemon
+  getMyPokemon,
+  releaseMyPokemon
 }

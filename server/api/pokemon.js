@@ -95,9 +95,32 @@ const myPokemon = async (request, reply) => {
   }
 }
 
+const releaseMyPokemon = async (request, reply) => {
+  try {
+    const { id } = request.params
+
+    const response = await PokemonHelper.releaseMyPokemon(id)
+
+    return reply
+      .status(200)
+      .send({
+        message: 'Release Pokemon Success',
+        response
+      })
+
+  } catch (error) {
+    return reply
+      .status(400)
+      .send({
+        error: error
+      })
+  }
+}
+
 Router.get('/list/:id', list);
 Router.get('/all_pokemon', allList)
 Router.post('/catch', catchPokemon)
 Router.get('/my-pokemon', myPokemon)
+Router.delete('/release-pokemon/:id', releaseMyPokemon)
 
 module.exports = Router;
